@@ -1,0 +1,13 @@
+Requirements:
+Python 3
+mysql.connector library
+dotenv library
+
+Contents of .env file:
+DB_ADDRESS={IP of server}
+DB_USERNAME={MySQL username}
+DB_PASSWORD={password for user}
+DB_NAME={database name}
+DB_TABLE={table name}
+
+MySQL server must have port 3306 open

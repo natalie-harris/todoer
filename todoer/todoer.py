@@ -7,6 +7,7 @@ address = os.getenv("DB_ADDRESS")
 username = os.getenv("DB_USERNAME")
 password = os.getenv("DB_PASSWORD")
 database = os.getenv("DB_NAME")
+table = os.getenv("DB_TABLE")
 
 conn = mysql.connector.connect(host=address, password=password, user=username, database=database)
 cursor = conn.cursor()
@@ -16,7 +17,7 @@ conn.commit()
 
 def format_date(id):
     # Selecting the specified entry and returning the formatted date from the date_created column
-    date_entry = "SELECT DATE_FORMAT(date_created, '%a %m-%d-%y @ %h:%i%p') FROM todos WHERE id = "+ str(id)
+    date_entry = "SELECT DATE_FORMAT(date_created, '%a %m-%d-%y @ %h:%i%p') FROM " + table + " WHERE id = "+ str(id)
     cursor.execute(date_entry)
     return (cursor.fetchone())[0]
 
@@ -24,11 +25,11 @@ def print_all(choice = 0):
     # Checking in case the user wanted to only see todos that were finished/unfinished
     match choice:
         case 1:
-            cursor.execute("SELECT * FROM todos WHERE finished = 0")
+            cursor.execute("SELECT * FROM %s WHERE finished = 0" % table)
         case 2:
-            cursor.execute("SELECT * FROM todos WHERE finished = 1")
+            cursor.execute("SELECT * FROM %s WHERE finished = 1" % table)
         case _:
-            cursor.execute("SELECT * FROM todos")
+            cursor.execute("SELECT * FROM %s" % table)
     
     rows = cursor.fetchall()
     for row in rows:
@@ -43,7 +44,7 @@ def print_all(choice = 0):
 def create_new():
     task = input("Enter the name of your task: ")
     # Inserting new task with user-specified description
-    add_entry = "INSERT INTO todos (description) VALUES ('%s')" % task
+    add_entry = "INSERT INTO %s (description) VALUES ('%s')" % (table, task)
     cursor.execute(add_entry)
     conn.commit()
 
@@ -52,14 +53,14 @@ def modify_task_name():
     print("")
     entry_id = input("Task id: ")
     # Check if entry exists
-    cursor.execute("SELECT * FROM todos WHERE id = %s" % entry_id)
+    cursor.execute("SELECT * FROM %s WHERE id = %s" % (table, entry_id))
     entry = cursor.fetchone()
     if entry is None:
         print("Task ID not found. Nothing has been changed.")
         return
     new_task = input("New name for your task: ")
     # Changing description of task at specified entry
-    modify_entry = "UPDATE todos SET description = '%s' WHERE id = %s" % (new_task, entry_id)
+    modify_entry = "UPDATE %s SET description = '%s' WHERE id = %s" % (table, new_task, entry_id)
     cursor.execute(modify_entry)
     conn.commit()
 
@@ -68,7 +69,7 @@ def check_off_task():
     print("")
     entry_id = input("Task id: ")
     # Finding task and only setting to finished if it isn't already
-    cursor.execute("SELECT * FROM todos WHERE id = %s" % entry_id)
+    cursor.execute("SELECT * FROM %s WHERE id = %s" % (table, entry_id))
     entry = cursor.fetchone()
     # Check if entry exists
     if entry is None:
@@ -80,7 +81,7 @@ def check_off_task():
         print("Task is already marked as finished! Nothing has been changed.")
         return
     # Setting 'finished' flag at specified entry
-    modify_entry = "UPDATE todos SET finished = 1 WHERE id = %s" % entry_id
+    modify_entry = "UPDATE %s SET finished = 1 WHERE id = %s" % (table, entry_id)
     cursor.execute(modify_entry)
     conn.commit()
     print("Task '%s' has been marked as finished.\n" % entry[1])
@@ -89,14 +90,14 @@ def delete_task():
     print_all()
     print("")
     entry_id = input("Task id: ")
-    cursor.execute("SELECT * FROM todos WHERE id = %s" % entry_id)
+    cursor.execute("SELECT * FROM %s WHERE id = %s" % (table, entry_id))
     entry = cursor.fetchone()
     # Check if entry exists
     if entry is None:
         print("Task ID not found. Nothing has been changed.")
         return
     # Delete specified entry
-    delete_entry = "DELETE FROM todos WHERE id = %s" % entry_id
+    delete_entry = "DELETE FROM %s WHERE id = %s" % (table, entry_id)
     cursor.execute(delete_entry)
     conn.commit()
 
