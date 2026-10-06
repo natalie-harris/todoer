@@ -1,13 +1,57 @@
-Requirements:
-Python 3
-mysql.connector library
-dotenv library
+# Todoer — CLI Task Management Application
 
-Contents of .env file:
-DB_ADDRESS={IP of server}
-DB_USERNAME={MySQL username}
-DB_PASSWORD={password for user}
-DB_NAME={database name}
-DB_TABLE={table name}
+A command-line Python application for managing to-do tasks with persistent storage in a MySQL / MariaDB database.
 
-MySQL server must have port 3306 open
+---
+
+## 📁 Project Structure
+
+```text
+├── todoer/
+│   ├── .env            # Local environment variables (git-ignored)
+│   ├── init_db.py      # Database table initialization script
+│   └── todoer.py       # Main application script
+├── .env.example        # Environment configuration template
+├── .gitignore          # Git ignore rules (venv, .env, __pycache__)
+├── requirements.txt    # Project dependencies
+└── README.md           # Project documentation
+```
+
+## Create and activate a virtual environment:
+
+Windows (PowerShell):
+
+PowerShell
+```bash
+python -m venv venv
+.\venv\Scripts\activate
+```
+Linux / macOS:
+
+```Bash
+python3 -m venv venv
+source venv/bin/activate
+```
+Install dependencies:
+
+```Bash
+pip install -r requirements.txt
+```
+## ⚙️ Configuration
+Copy .env.example to create .env inside the todoer/ directory:
+
+```Bash
+cp .env.example todoer/.env
+```
+## 🚀 Running the Application
+Database Table Initialization (First-time setup):
+If the target table does not exist on the remote server yet, execute the initialization script:
+
+```Bash
+python todoer/init_db.py
+```
+Launch Main Application:
+
+```bash
+python todoer/todoer.py
+```
