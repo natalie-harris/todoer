@@ -1,6 +1,7 @@
 import mysql.connector
 import os
 from dotenv import load_dotenv
+from init_db import init_db
 
 load_dotenv()
 address = os.getenv("DB_ADDRESS")
@@ -14,6 +15,8 @@ cursor = conn.cursor()
 # Setting time zone so new entries are set in Eastern Time
 cursor.execute("SET time_zone = '-05:00'")
 conn.commit()
+
+init_db()
 
 def format_date(id):
     # Selecting the specified entry and returning the formatted date from the date_created column
